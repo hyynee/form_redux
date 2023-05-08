@@ -109,14 +109,14 @@ class CreateForm extends Component {
     });
     this.handleValidation(e);
   };
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      values: newProps.svEdit,
-    });
-  }
+  // can thiệp trước render
+  // componentWillReceiveProps(newProps) {
+  //   this.setState({
+  //     values: newProps.svEdit,
+  //   });
+  // }
   render() {
-    let  svEdit  = this.state.values;
-    // console.log(this.props.svEdit);
+    let svEdit = this.state.values;
     return (
       <div className="container">
         <form className="card" onSubmit={this.handleSubmit}>
@@ -208,13 +208,14 @@ class CreateForm extends Component {
       </div>
     );
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if(prevProps.svEdit.maSV !== this.props.svEdit.maSV) {
-  //     this.setState({
-  //       values: this.props.svEdit,
-  //     })
-  //   }
-  // }
+  // can thiệp sau render
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.svEdit.maSV !== this.props.svEdit.maSV) {
+      this.setState({
+        values: this.props.svEdit,
+      })
+    }
+  }
 }
 const mapStateToProps = (state) => ({
   arrSV: state.quanLySinhVienReducer.arrSV,
