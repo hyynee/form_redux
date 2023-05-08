@@ -101,8 +101,8 @@ class CreateForm extends Component {
   };
 
   changeInput = (e) => {
-    this.state.values[e.target.id] = e.target.value;
     let newValues = { ...this.state.values };
+    newValues[e.target.id] = e.target.value;
     // console.log(e.target.id,e.target.value)
     this.setState({
       values: newValues,
@@ -115,8 +115,7 @@ class CreateForm extends Component {
     });
   }
   render() {
-    // let { svEdit } = this.props;
-    let svEdit = this.state.values;
+    let  svEdit  = this.state.values;
     // console.log(this.props.svEdit);
     return (
       <div className="container">
