@@ -65,10 +65,14 @@ const quanLySinhVienReducer = createSlice({
       state.svEdit = action.payload;
     },
     updateSV: (state, action) => {},
+    searchSV: (state,action) => {
+      state.arrSV.filter((id) => id === action.payload);
+    },
   },
+
 });
 
-export const { changeInfo,changeInfoErrors, themSinhVien, delSinhVien, editSV } =
+export const { changeInfo,changeInfoErrors, themSinhVien, delSinhVien, editSV , searchSV} =
   quanLySinhVienReducer.actions;
 
 export default quanLySinhVienReducer.reducer;

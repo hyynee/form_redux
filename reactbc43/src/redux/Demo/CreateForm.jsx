@@ -4,6 +4,7 @@ import {
   changeInfo,
   changeInfoErrors,
   editSV,
+  searchSV,
   themSinhVien,
 } from "../reducers/quanLySinhVienReducer";
 
@@ -105,12 +106,30 @@ class CreateForm extends Component {
   render() {
     // anh sửa lại
     let svEdit = this.props.svEdit;
-    console.log(svEdit);
+    // console.log(svEdit);
+    
     return (
       <div className="container">
         <form className="card" onSubmit={this.handleSubmit}>
           <div className="card-header bg-dark text-white">
             <h3>Thông tin sinh viên</h3>
+            <div className="d-flex w-25" role="search">
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                onChange={(e) => {
+                  const action = searchSV(e.target.value);
+                  this.props.dispatch(action);
+                }}
+              />
+              <button className="btn btn-outline-success" type="button" onClick={() => {
+                  //  this.props.dispatch(action);
+              }}>
+                Search
+              </button>
+            </div>
           </div>
           <div className="card-body">
             <form>
