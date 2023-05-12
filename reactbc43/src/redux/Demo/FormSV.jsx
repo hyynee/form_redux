@@ -5,7 +5,6 @@ import { delSinhVien, editSV } from "../reducers/quanLySinhVienReducer";
 class FormSV extends Component {
   render() {
     // console.log(this.props); // ful aray
-    // console.log(this.props.svEdit); // rỗng
     return (
       <div className="container" style={{ paddingTop: 100 }}>
         <table className="table">
@@ -59,5 +58,4 @@ const mapStateToProps = (state) => ({
   arrSV: state.quanLySinhVienReducer.arrSV,
   svEdit: state.quanLySinhVienReducer.svEdit,
 });
-
 export default connect(mapStateToProps)(FormSV);

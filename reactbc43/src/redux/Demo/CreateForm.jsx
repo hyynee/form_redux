@@ -1,41 +1,31 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { editSV, themSinhVien } from "../reducers/quanLySinhVienReducer";
+import {
+  changeInfo,
+  changeInfoErrors,
+  editSV,
+  themSinhVien,
+} from "../reducers/quanLySinhVienReducer";
 
 class CreateForm extends Component {
-  state = {
-    values: {
-      maSV: "",
-      tenSV: "",
-      sDT: "",
-      email: "",
-    },
-    errors: {
-      maSV: "(*)",
-      tenSV: "(*)",
-      sDT: "(*)",
-      email: "(*)",
-    },
-  };
   handleSubmit = (e) => {
     e.preventDefault();
-    for (let key in this.state.errors) {
-      if (this.state.errors[key] !== "") {
+    for (let key in this.props.errors) {
+      if (this.props.errors[key] !== "") {
         alert("data is not valid!!");
         return;
       }
     }
-    const action = themSinhVien(this.state.values);
+    const action = themSinhVien(this.props.svEdit);
     this.props.dispatch(action);
   };
-
   handleValidation = (e) => {
     const dataType = e.target.getAttribute("data-type");
     const minLength = e.target.getAttribute("data-minlength");
     const maxLength = e.target.getAttribute("data-maxlength");
     const { value, id } = e.target;
 
-    let newErrors = { ...this.state.errors };
+    let newErrors = { ...this.props.errors };
     let errorMessage = "";
 
     if (value.trim() === "") {
@@ -94,19 +84,16 @@ class CreateForm extends Component {
     }
 
     newErrors[id] = errorMessage;
-
-    this.setState({
-      errors: newErrors,
-    });
+    const action = changeInfoErrors({ id, value: errorMessage });
+    // const action = changeInfo({ id: e.target.id, value: e.target.value });
+    this.props.dispatch(action);
+    // this.setState({
+    //   errors: newErrors,
+    // });
   };
-
   changeInput = (e) => {
-    let newValues = { ...this.state.values };
-    newValues[e.target.id] = e.target.value;
-    // console.log(e.target.id,e.target.value)
-    this.setState({
-      values: newValues,
-    });
+    const action = changeInfo({ id: e.target.id, value: e.target.value });
+    this.props.dispatch(action);
     this.handleValidation(e);
   };
   // can thiệp trước render
@@ -116,7 +103,9 @@ class CreateForm extends Component {
   //   });
   // }
   render() {
-    let svEdit = this.state.values;
+    // anh sửa lại
+    let svEdit = this.props.svEdit;
+    console.log(svEdit);
     return (
       <div className="container">
         <form className="card" onSubmit={this.handleSubmit}>
@@ -139,7 +128,7 @@ class CreateForm extends Component {
                     value={svEdit.maSV}
                   />
                   <span className="text-danger fw-bold">
-                    {this.state.errors.maSV}
+                    {this.props.errors.maSV}
                   </span>
                 </div>
                 <div className="form-group col-6">
@@ -154,7 +143,7 @@ class CreateForm extends Component {
                     value={svEdit.tenSV}
                   />
                   <span className="text-danger fw-bold">
-                    {this.state.errors.tenSV}
+                    {this.props.errors.tenSV}
                   </span>
                 </div>
               </div>
@@ -174,7 +163,7 @@ class CreateForm extends Component {
                   />
                   <span className="text-danger fw-bold">
                     {" "}
-                    {this.state.errors.sDT}
+                    {this.props.errors.sDT}
                   </span>
                 </div>
                 <div className="form-group col-6">
@@ -190,7 +179,7 @@ class CreateForm extends Component {
                   />
                   <span className="text-danger fw-bold">
                     {" "}
-                    {this.state.errors.email}
+                    {this.props.errors.email}
                   </span>
                 </div>
               </div>
@@ -209,17 +198,18 @@ class CreateForm extends Component {
     );
   }
   // can thiệp sau render
-  componentDidUpdate(prevProps, prevState) {
-    if(prevProps.svEdit.maSV !== this.props.svEdit.maSV) {
-      this.setState({
-        values: this.props.svEdit,
-      })
-    }
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.svEdit.maSV !== this.props.svEdit.maSV) {
+  //     this.setState({
+  //       values: this.props.svEdit,
+  //     });
+  //   }
+  // }
 }
 const mapStateToProps = (state) => ({
   arrSV: state.quanLySinhVienReducer.arrSV,
   svEdit: state.quanLySinhVienReducer.svEdit,
+  errors: state.quanLySinhVienReducer.errors,
 });
 
 export default connect(mapStateToProps)(CreateForm);

@@ -27,6 +27,12 @@ const initialState = {
       email: "nguyenthuytrang@gmail.com",
     },
   ],
+  errors: {
+    maSV: "(*)",
+    tenSV: "(*)",
+    sDT: "(*)",
+    email: "(*)",
+  },
   svEdit: {
     maSV: "",
     tenSV: "",
@@ -39,6 +45,12 @@ const quanLySinhVienReducer = createSlice({
   name: "quanLySinhVienReducer",
   initialState,
   reducers: {
+    changeInfo: (state, action) => {
+      state.svEdit[action.payload.id] = action.payload.value;
+    },
+    changeInfoErrors: (state,action) => {
+      state.errors[action.payload.id] = action.payload.value;
+    },
     themSinhVien: (state, action) => {
       state.arrSV.push(action.payload);
     },
@@ -49,15 +61,14 @@ const quanLySinhVienReducer = createSlice({
         state.arrSV.splice(indexDel, 1);
       }
     },
-    editSV: (state,action) => {
+    editSV: (state, action) => {
       state.svEdit = action.payload;
     },
-    updateSV: (state,action) => {
-        
-    }
+    updateSV: (state, action) => {},
   },
 });
 
-export const { themSinhVien, delSinhVien,editSV } = quanLySinhVienReducer.actions;
+export const { changeInfo,changeInfoErrors, themSinhVien, delSinhVien, editSV } =
+  quanLySinhVienReducer.actions;
 
 export default quanLySinhVienReducer.reducer;
