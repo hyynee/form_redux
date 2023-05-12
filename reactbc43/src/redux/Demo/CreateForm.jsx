@@ -97,17 +97,10 @@ class CreateForm extends Component {
     this.props.dispatch(action);
     this.handleValidation(e);
   };
-  // can thiệp trước render
-  // componentWillReceiveProps(newProps) {
-  //   this.setState({
-  //     values: newProps.svEdit,
-  //   });
-  // }
   render() {
     // anh sửa lại
     let svEdit = this.props.svEdit;
     // console.log(svEdit);
-    
     return (
       <div className="container">
         <form className="card" onSubmit={this.handleSubmit}>
@@ -121,6 +114,7 @@ class CreateForm extends Component {
                 aria-label="Search"
                 onChange={(e) => {
                   const action = searchSV(e.target.value);
+                  console.log(e.target.value)
                   this.props.dispatch(action);
                 }}
               />

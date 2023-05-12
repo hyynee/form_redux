@@ -66,7 +66,7 @@ const quanLySinhVienReducer = createSlice({
     },
     updateSV: (state, action) => {},
     searchSV: (state,action) => {
-      state.arrSV.filter((id) => id === action.payload);
+      state.arrSV.filter((sv) => sv.maSV === action.payload.maSV);
     },
   },
 
