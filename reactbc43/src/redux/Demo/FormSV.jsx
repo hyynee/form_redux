@@ -4,7 +4,7 @@ import { delSinhVien, editSV } from "../reducers/quanLySinhVienReducer";
 
 class FormSV extends Component {
   render() {
-    // console.log(this.props); // ful aray
+    console.log(this.props); // ful aray
     return (
       <div className="container" style={{ paddingTop: 100 }}>
         <table className="table">
@@ -38,7 +38,7 @@ class FormSV extends Component {
                     <button
                       className="btn btn-primary mx-2"
                       onClick={() => {
-                     this.props.dispatch(editSV(prod))
+                        this.props.dispatch(editSV(prod));
                       }}
                     >
                       Edit

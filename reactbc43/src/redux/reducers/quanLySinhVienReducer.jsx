@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
   arrSV: [
@@ -39,6 +39,7 @@ const initialState = {
     sDT: "",
     email: "",
   },
+  isEdit: false,
 };
 
 const quanLySinhVienReducer = createSlice({
@@ -48,7 +49,7 @@ const quanLySinhVienReducer = createSlice({
     changeInfo: (state, action) => {
       state.svEdit[action.payload.id] = action.payload.value;
     },
-    changeInfoErrors: (state,action) => {
+    changeInfoErrors: (state, action) => {
       state.errors[action.payload.id] = action.payload.value;
     },
     themSinhVien: (state, action) => {
@@ -62,17 +63,34 @@ const quanLySinhVienReducer = createSlice({
       }
     },
     editSV: (state, action) => {
+      state.isEdit = true;
       state.svEdit = action.payload;
     },
-    updateSV: (state, action) => {},
-    searchSV: (state,action) => {
-      state.arrSV.filter((sv) => sv.maSV === action.payload.maSV);
+    updateSV: (state, action) => {
+      const { id, value } = action.payload;
+      const index = state.arrSV.findIndex((sv) => sv.maSV === id);
+      if (index !== -1) {
+        state.arrSV[index] = { ...state.arrSV[index], ...value };
+      }
+    },
+
+    searchSV: (state, action) => {
+      const isFind = state.arrSV.find((sv) => sv.maSV === action.payload);
+      if (isFind) {
+        state.arrSV = state.arrSV.filter((sv) => sv.maSV === action.payload);
+      }
     },
   },
-
 });
 
-export const { changeInfo,changeInfoErrors, themSinhVien, delSinhVien, editSV , searchSV} =
-  quanLySinhVienReducer.actions;
+export const {
+  changeInfo,
+  changeInfoErrors,
+  themSinhVien,
+  delSinhVien,
+  editSV,
+  updateSV,
+  searchSV,
+} = quanLySinhVienReducer.actions;
 
 export default quanLySinhVienReducer.reducer;

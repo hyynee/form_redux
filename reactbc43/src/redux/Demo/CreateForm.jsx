@@ -6,6 +6,7 @@ import {
   editSV,
   searchSV,
   themSinhVien,
+  updateSV,
 } from "../reducers/quanLySinhVienReducer";
 
 class CreateForm extends Component {
@@ -114,13 +115,15 @@ class CreateForm extends Component {
                 aria-label="Search"
                 onChange={(e) => {
                   const action = searchSV(e.target.value);
-                  console.log(e.target.value)
+                  console.log(e.target.value);
                   this.props.dispatch(action);
                 }}
               />
-              <button className="btn btn-outline-success" type="button" onClick={() => {
-                  //  this.props.dispatch(action);
-              }}>
+              <button
+                className="btn btn-outline-success"
+                type="button"
+                onClick={() => {}}
+              >
                 Search
               </button>
             </div>
@@ -139,6 +142,7 @@ class CreateForm extends Component {
                     className="form-control"
                     onInput={this.changeInput}
                     value={svEdit.maSV}
+                    disabled={this.props.isEdit}
                   />
                   <span className="text-danger fw-bold">
                     {this.props.errors.maSV}
@@ -202,7 +206,14 @@ class CreateForm extends Component {
             <button type="submit" className="btn btn-success">
               Thêm Sinh Viên
             </button>
-            <button className="btn btn-primary mx-2" type="button">
+            <button
+              className="btn btn-primary mx-2"
+              type="button"
+              onClick={() => {
+                const action = updateSV({ id: svEdit.maSV, value: svEdit });
+                this.props.dispatch(action);
+              }}
+            >
               Update
             </button>
           </div>
@@ -223,6 +234,8 @@ const mapStateToProps = (state) => ({
   arrSV: state.quanLySinhVienReducer.arrSV,
   svEdit: state.quanLySinhVienReducer.svEdit,
   errors: state.quanLySinhVienReducer.errors,
+  isEdit: state.quanLySinhVienReducer.isEdit,
+  updateSV: state.quanLySinhVienReducer.updateSV,
 });
 
 export default connect(mapStateToProps)(CreateForm);
