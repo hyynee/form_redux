@@ -73,11 +73,12 @@ const quanLySinhVienReducer = createSlice({
         state.arrSV[index] = { ...state.arrSV[index], ...value };
       }
     },
-
     searchSV: (state, action) => {
-      const isFind = state.arrSV.find((sv) => sv.maSV === action.payload);
-      if (isFind) {
-        state.arrSV = state.arrSV.filter((sv) => sv.maSV === action.payload);
+      const searchValue = action.payload;
+      if (searchValue.trim() !== "") {
+        state.arrSV = state.arrSV.filter((sv) => sv.maSV.includes(searchValue));
+      } else {
+        state.arrSV = initialState.arrSV;
       }
     },
   },
