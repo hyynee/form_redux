@@ -40,6 +40,7 @@ const initialState = {
     email: "",
   },
   isEdit: false,
+  isUpdate: true,
 };
 
 const quanLySinhVienReducer = createSlice({
@@ -67,11 +68,19 @@ const quanLySinhVienReducer = createSlice({
       state.svEdit = action.payload;
     },
     updateSV: (state, action) => {
+      state.isUpdate = false;
       const { id, value } = action.payload;
       const index = state.arrSV.findIndex((sv) => sv.maSV === id);
       if (index !== -1) {
         state.arrSV[index] = { ...state.arrSV[index], ...value };
       }
+      // Reset giá trị của svEdit về rỗng
+      state.svEdit = {
+        maSV: "",
+        tenSV: "",
+        sDT: "",
+        email: "",
+      };
     },
     searchSV: (state, action) => {
       const searchValue = action.payload;
