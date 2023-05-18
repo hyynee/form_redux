@@ -142,7 +142,7 @@ class CreateForm extends Component {
                     className="form-control"
                     onInput={this.changeInput}
                     value={svEdit.maSV}
-                    disabled={this.props.isEdit && this.props.isUpdate}
+                    disabled={this.props.isEdit}
                   />
                   <span className="text-danger fw-bold">
                     {this.props.errors.maSV}
@@ -236,7 +236,6 @@ const mapStateToProps = (state) => ({
   errors: state.quanLySinhVienReducer.errors,
   isEdit: state.quanLySinhVienReducer.isEdit,
   updateSV: state.quanLySinhVienReducer.updateSV,
-  isUpdate: state.quanLySinhVienReducer.isUpdate,
 });
 
 export default connect(mapStateToProps)(CreateForm);

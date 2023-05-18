@@ -53,33 +53,31 @@ const initialState = {
       email: "nguyenthuytrang@gmail.com",
     },
   ],
+  userSV: {
+    maSV: "",
+    tenSV: "",
+    sDT: "",
+    email: "",
+  },
   errors: {
     maSV: "(*)",
     tenSV: "(*)",
     sDT: "(*)",
     email: "(*)",
   },
-  svEdit: {
-    maSV: "",
-    tenSV: "",
-    sDT: "",
-    email: "",
-  },
   isEdit: false,
 };
 
-const quanLySinhVienReducer = createSlice({
-  name: "quanLySinhVienReducer",
+const qlsvReducer = createSlice({
+  name: "qlsvReducer",
   initialState,
   reducers: {
-    changeInfo: (state, action) => {
-      state.svEdit[action.payload.id] = action.payload.value;
-    },
     changeInfoErrors: (state, action) => {
       state.errors[action.payload.id] = action.payload.value;
     },
-    themSinhVien: (state, action) => {
-      state.arrSV.push(action.payload);
+    addSVAction: (state, action) => {
+      const sV = { ...action.payload };
+      state.arrSV.push(sV);
       state.arrSVUpdate.push(action.payload);
     },
     delSinhVien: (state, action) => {
@@ -96,15 +94,13 @@ const quanLySinhVienReducer = createSlice({
     },
     editSV: (state, action) => {
       state.isEdit = true;
-      state.svEdit = action.payload;
+      state.userSV = { ...action.payload };
     },
     updateSV: (state, action) => {
-      // state.isUpdate = false;
-      state.isEdit = false;
       const { id, value } = action.payload;
+      state.userSV[id] = value;
       const index = state.arrSV.findIndex((sv) => sv.maSV === id);
       if (index !== -1) {
-        // Thực hiện kiểm tra hợp lệ
         for (let key in value) {
           if (value[key].trim() === "") {
             return;
@@ -120,7 +116,6 @@ const quanLySinhVienReducer = createSlice({
         sDT: "",
         email: "",
       };
-
     },
     searchSV: (state, action) => {
       const searchValue = action.payload;
@@ -132,13 +127,13 @@ const quanLySinhVienReducer = createSlice({
 });
 
 export const {
-  changeInfo,
-  changeInfoErrors,
-  themSinhVien,
+  addSVAction,
   delSinhVien,
   editSV,
   updateSV,
+  changeInfo,
+  changeInfoErrors,
   searchSV,
-} = quanLySinhVienReducer.actions;
+} = qlsvReducer.actions;
 
-export default quanLySinhVienReducer.reducer;
+export default qlsvReducer.reducer;

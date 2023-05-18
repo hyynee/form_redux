@@ -8,6 +8,7 @@ import Lifecycle from "./reactlifecycle/Lifecycle";
 import { Provider } from "react-redux";
 import { store } from "./redux/configStore";
 import Homepages from "./redux/Demo/Homepages";
+import Home from "./form_func/Home";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,6 +17,7 @@ root.render(
   // <FormDemo></FormDemo>
   // <Lifecycle></Lifecycle>
   <Provider store={store}>
-    <Homepages></Homepages>
+    {/* <Homepages></Homepages> */}
+    <Home></Home>
   </Provider>
 );
