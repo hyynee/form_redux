@@ -67,7 +67,6 @@ const initialState = {
   },
   isEdit: false,
 };
-
 const quanLySinhVienReducer = createSlice({
   name: "quanLySinhVienReducer",
   initialState,
@@ -82,24 +81,18 @@ const quanLySinhVienReducer = createSlice({
       state.arrSV.push(action.payload);
       state.arrSVUpdate.push(action.payload);
     },
+
     delSinhVien: (state, action) => {
-      let maSV = action.payload;
-      let indexDel = state.arrSV.findIndex((sv) => sv.maSV === maSV);
-      if (indexDel !== -1) {
-        state.arrSV.splice(indexDel, 1);
-      }
-      let maSVUD = action.payload;
-      let indexDelUD = state.arrSVUpdate.findIndex((sv) => sv.maSV === maSVUD);
-      if (indexDelUD !== -1) {
-        state.arrSVUpdate.splice(indexDel, 1);
-      }
+      const maSV = action.payload;
+      state.arrSV = state.arrSV.filter((sv) => sv.maSV !== maSV);
+      state.arrSVUpdate = state.arrSVUpdate.filter((sv) => sv.maSV !== maSV);
     },
+
     editSV: (state, action) => {
       state.isEdit = true;
       state.svEdit = action.payload;
     },
     updateSV: (state, action) => {
-      // state.isUpdate = false;
       state.isEdit = false;
       const { id, value } = action.payload;
       const index = state.arrSV.findIndex((sv) => sv.maSV === id);
@@ -112,7 +105,7 @@ const quanLySinhVienReducer = createSlice({
         }
         state.arrSVUpdate[index] = { ...state.arrSVUpdate[index], ...value };
       }
-      state.arrSV = JSON.parse(JSON.stringify(state.arrSVUpdate));
+      state.arrSV = state.arrSVUpdate.slice(); // Sao chép nội dung từ arrSVUpdate vào arrSV
       // Đặt lại giá trị của svEdit về rỗng
       state.svEdit = {
         maSV: "",
@@ -120,13 +113,16 @@ const quanLySinhVienReducer = createSlice({
         sDT: "",
         email: "",
       };
-
     },
     searchSV: (state, action) => {
       const searchValue = action.payload;
-      state.arrSV = state.arrSVUpdate.filter((sv) =>
-        sv.maSV.includes(searchValue)
-      );
+      if (searchValue === "") {
+        state.arrSV = state.arrSVUpdate.slice();
+      } else {
+        state.arrSV = state.arrSVUpdate.filter((sv) =>
+          sv.maSV.includes(searchValue)
+        );
+      }
     },
   },
 });
