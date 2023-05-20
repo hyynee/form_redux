@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addSVAction,
@@ -7,98 +7,45 @@ import {
   updateSV,
   updateSVAction,
 } from "../redux/reducers/qlsvReducer";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 const CreateForm_Func = () => {
-  const { arrSV, userSV, errors, isEdit } = useSelector(
-    (state) => state.qlsvReducer
-  );
   const dispatch = useDispatch();
-  // console.log("mang SV ",arrSV);
 
-  const handleValidation = (e) => {
-    const dataType = e.target.getAttribute("data-type");
-    const minLength = e.target.getAttribute("data-minlength");
-    const maxLength = e.target.getAttribute("data-maxlength");
-    const { value, id } = e.target;
+  const form = useFormik({
+    initialValues: {
+      maSV: "",
+      tenSV: "",
+      sDT: "",
+      email: "",
+    },
+    validationSchema: Yup.object().shape({
+      maSV: Yup.number().required().min(4),
+      tenSV: Yup.string().required().max(15),
+      sDT: Yup.number().required().min(10),
+      email: Yup.string().required().email(),
+    }),
+    onSubmit: (values) => {
+      const action = addSVAction(values);
+      dispatch(action);
+    },
+  });
 
-    let newErrors = { ...errors };
-    let errorMessage = "";
-
-    if (value.trim() === "") {
-      errorMessage = id + " không được bỏ trống !!!";
-    } else {
-      if (dataType) {
-        switch (dataType) {
-          case "number": {
-            let regexNumber = /^-?\d*\.?\d+$/;
-            if (!regexNumber.test(value)) {
-              errorMessage = id + " phải là số !!!";
-            }
-            break;
-          }
-          case "string": {
-            let regexString = /^[a-z A-Z0-9]+$/;
-            if (!regexString.test(value)) {
-              errorMessage = id + " không được chứa dấu và ký tự đặc biệt!!!";
-            }
-            break;
-          }
-          case "email": {
-            let regexEmail =
-              /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-            if (!regexEmail.test(value)) {
-              errorMessage = id + " không hợp lệ !!!";
-            }
-            break;
-          }
-        }
-      }
-      if (minLength) {
-        if (value.length < minLength) {
-          errorMessage = id + " không được dưới " + minLength + " ký tự!!!";
-        }
-      }
-      if (maxLength) {
-        if (value.length > maxLength) {
-          errorMessage = id + " không được hơn " + maxLength + " ký tự!!!";
-        }
-      }
-      if (id === "maSV") {
-        const maSVList = arrSV.map((sv) => sv.maSV);
-        if (maSVList.includes(value)) {
-          errorMessage = "Mã SV đã tồn tại!!!";
-        }
-      }
-      if (id === "email") {
-        const maSVList = arrSV.map((sv) => sv.email);
-        if (maSVList.includes(value)) {
-          errorMessage = "email đã tồn tại!!!";
-        }
-      }
-    }
-    newErrors[id] = errorMessage;
-    const action = changeInfoErrors({ id, value: errorMessage });
-    dispatch(action);
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    for (let key in errors) {
-      if (errors[key] !== "") {
-        alert("data is not valid!!");
-        return;
-      }
-    }
-    const action = addSVAction(userSV);
-    dispatch(action);
-  };
-  const handleChangeInput = (e) => {
-    const { id, value } = e.target;
-    const action = updateSV({ id, value });
-    dispatch(action);
-    handleValidation(e);
-  };
+  const { arrSV, userSV, isEdit } = useSelector((state) => state.qlsvReducer);
+  useEffect(() => {
+    const { setValues } = form;
+    setValues({ ...userSV });
+    console.log(form.values);
+  }, [userSV]);
   return (
     <div className="container">
-      <form className="card" onSubmit={handleSubmit}>
+      <form
+        className="card"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
         <div className="card-header bg-dark text-white">
           <h3>Thông tin sinh viên</h3>
           <div className="d-flex w-25" role="search">
@@ -124,30 +71,27 @@ const CreateForm_Func = () => {
               <div className="form-group col-6">
                 <p>Mã sinh viên</p>
                 <input
-                  data-type="number"
-                  data-maxlength="32"
                   type="number"
                   name="maSV"
                   id="maSV"
                   className="form-control"
-                  onInput={handleChangeInput}
-                  value={userSV.maSV}
+                  onChange={form.handleChange}
                   disabled={isEdit}
+                  value={form.values.maSV}
                 />
-                <span className="text-danger fw-bold">{errors.maSV}</span>
+                <span className="text-danger fw-bold">{form.errors.maSV}</span>
               </div>
               <div className="form-group col-6">
                 <p>Tên sinh viên</p>
                 <input
-                  data-type="string"
                   type="text"
                   name="tenSV"
                   id="tenSV"
                   className="form-control"
-                  onInput={handleChangeInput}
-                  value={userSV.tenSV}
+                  onChange={form.handleChange}
+                  value={form.values.tenSV}
                 />
-                <span className="text-danger fw-bold">{errors.tenSV}</span>
+                <span className="text-danger fw-bold">{form.errors.tenSV}</span>
               </div>
             </div>
             <div className="row">
@@ -155,16 +99,13 @@ const CreateForm_Func = () => {
                 <p>Số điện thoại</p>
                 <input
                   type="number"
-                  data-type="number"
-                  data-minlength="10"
-                  data-maxlength="32"
                   name="sDT"
                   id="sDT"
                   className="form-control"
-                  onInput={handleChangeInput}
-                  value={userSV.sDT}
+                  onChange={form.handleChange}
+                  value={form.values.sDT}
                 />
-                <span className="text-danger fw-bold"> {errors.sDT} </span>
+                <span className="text-danger fw-bold"> {form.errors.sDT} </span>
               </div>
               <div className="form-group col-6">
                 <p>Email</p>
@@ -174,10 +115,13 @@ const CreateForm_Func = () => {
                   name="email"
                   id="email"
                   className="form-control"
-                  onInput={handleChangeInput}
-                  value={userSV.email}
+                  onChange={form.handleChange}
+                  value={form.values.email}
                 />
-                <span className="text-danger fw-bold"> {errors.email}</span>
+                <span className="text-danger fw-bold">
+                  {" "}
+                  {form.errors.email}
+                </span>
               </div>
             </div>
           </form>

@@ -10,6 +10,19 @@ import {
 } from "../reducers/quanLySinhVienReducer";
 
 class CreateForm extends Component {
+  handleUpdate = () => {
+    for (let key in this.props.errors) {
+      if (this.props.errors[key] !== "") {
+        alert("data is not valid!!!");
+        return;
+      }
+    }
+    const action = updateSV({
+      id: this.props.svEdit.maSV,
+      value: this.props.svEdit,
+    });
+    this.props.dispatch(action);
+  };
   handleSubmit = (e) => {
     e.preventDefault();
     for (let key in this.props.errors) {
@@ -84,14 +97,76 @@ class CreateForm extends Component {
         }
       }
     }
-
     newErrors[id] = errorMessage;
     const action = changeInfoErrors({ id, value: errorMessage });
-    // const action = changeInfo({ id: e.target.id, value: e.target.value });
     this.props.dispatch(action);
-    // this.setState({
-    //   errors: newErrors,
-    // });
+  };
+  handleUpdate = (e) => {
+    if (this.props.isEdit) {
+      const dataType = e.target.getAttribute("data-type");
+      const minLength = e.target.getAttribute("data-minlength");
+      const maxLength = e.target.getAttribute("data-maxlength");
+      const { value, id } = e.target;
+      let newErrors = { ...this.props.errors };
+      let errorMessage = "";
+      if (value.trim() === "") {
+        errorMessage = id + " không được bỏ trống !!!";
+      } else {
+        if (dataType) {
+          switch (dataType) {
+            case "number": {
+              let regexNumber = /^-?\d*\.?\d+$/;
+              if (!regexNumber.test(value)) {
+                errorMessage = id + " phải là số !!!";
+              }
+              break;
+            }
+            case "string": {
+              let regexString = /^[a-z A-Z0-9]+$/;
+              if (!regexString.test(value)) {
+                errorMessage = id + " không được chứa dấu và ký tự đặc biệt!!!";
+              }
+              break;
+            }
+            case "email": {
+              let regexEmail =
+                /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+              if (!regexEmail.test(value)) {
+                errorMessage = id + " không hợp lệ !!!";
+              }
+              break;
+            }
+          }
+        }
+        if (minLength) {
+          if (value.length < minLength) {
+            errorMessage = id + " không được dưới " + minLength + " ký tự!!!";
+          }
+        }
+        if (maxLength) {
+          if (value.length > maxLength) {
+            errorMessage = id + " không được hơn " + maxLength + " ký tự!!!";
+          }
+        }
+        if (id === "maSV") {
+          let { arrSV } = this.props;
+          const maSVList = arrSV.map((sv) => sv.maSV);
+          if (maSVList.includes(value)) {
+            errorMessage = "Mã SV đã tồn tại!!!";
+          }
+        }
+        if (id === "email") {
+          let { arrSV } = this.props;
+          const maSVList = arrSV.map((sv) => sv.email);
+          if (maSVList.includes(value)) {
+            errorMessage = "email đã tồn tại!!!";
+          }
+        }
+      }
+      newErrors[id] = errorMessage;
+      const action = changeInfoErrors({ id, value: errorMessage });
+      this.props.dispatch(action);
+    }
   };
   changeInput = (e) => {
     const action = changeInfo({ id: e.target.id, value: e.target.value });
@@ -99,9 +174,7 @@ class CreateForm extends Component {
     this.handleValidation(e);
   };
   render() {
-    // anh sửa lại
     let svEdit = this.props.svEdit;
-    // console.log(svEdit);
     return (
       <div className="container">
         <form className="card" onSubmit={this.handleSubmit}>
@@ -119,11 +192,7 @@ class CreateForm extends Component {
                   this.props.dispatch(action);
                 }}
               />
-              <button
-                className="btn btn-outline-success"
-                type="button"
-                onClick={() => {}}
-              >
+              <button className="btn btn-outline-success" type="button">
                 Search
               </button>
             </div>
@@ -209,10 +278,7 @@ class CreateForm extends Component {
             <button
               className="btn btn-primary mx-2"
               type="button"
-              onClick={() => {
-                const action = updateSV({ id: svEdit.maSV, value: svEdit });
-                this.props.dispatch(action);
-              }}
+              onClick={this.handleUpdate}
             >
               Update
             </button>

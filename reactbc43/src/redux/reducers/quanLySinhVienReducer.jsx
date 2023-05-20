@@ -80,22 +80,32 @@ const quanLySinhVienReducer = createSlice({
     themSinhVien: (state, action) => {
       state.arrSV.push(action.payload);
       state.arrSVUpdate.push(action.payload);
+      state.svEdit = {
+        maSV: "",
+        tenSV: "",
+        sDT: "",
+        email: "",
+      };
     },
-
     delSinhVien: (state, action) => {
       const maSV = action.payload;
       state.arrSV = state.arrSV.filter((sv) => sv.maSV !== maSV);
       state.arrSVUpdate = state.arrSVUpdate.filter((sv) => sv.maSV !== maSV);
     },
-
     editSV: (state, action) => {
       state.isEdit = true;
       state.svEdit = action.payload;
+      state.errors = {
+        maSV: "",
+        tenSV: "",
+        sDT: "",
+        email: "",
+      };
     },
     updateSV: (state, action) => {
       state.isEdit = false;
       const { id, value } = action.payload;
-      const index = state.arrSV.findIndex((sv) => sv.maSV === id);
+      const index = state.arrSVUpdate.findIndex((sv) => sv.maSV === id);
       if (index !== -1) {
         // Thực hiện kiểm tra hợp lệ
         for (let key in value) {
@@ -106,7 +116,6 @@ const quanLySinhVienReducer = createSlice({
         state.arrSVUpdate[index] = { ...state.arrSVUpdate[index], ...value };
       }
       state.arrSV = state.arrSVUpdate.slice(); // Sao chép nội dung từ arrSVUpdate vào arrSV
-      // Đặt lại giá trị của svEdit về rỗng
       state.svEdit = {
         maSV: "",
         tenSV: "",
